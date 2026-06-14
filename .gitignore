@@ -14,6 +14,7 @@ data/
 # or host it externally and download at runtime. Un-ignore via `git add -f`
 # if you deliberately commit it through LFS.
 models/*.pt
+!models/best_model.pt
 models/*.pth
 models/*.ckpt
 !models/.gitkeep
