@@ -32,7 +32,7 @@ that takes an audio file and returns the verdict plus a confidence score.
 - [Reproducibility](#reproducibility)
 - [Deployment](#deployment)
 - [Notes, limitations & ethics](#notes-limitations--ethics)
-- [License](#license)
+
 
 ---
 
