@@ -322,6 +322,3 @@ Confusion matrix and ROC are saved under `reports/figures/`.
   robustness.
 - This tool is intended for defensive/authenticity-verification use.
 
-## License
-
-Released under the [MIT License](LICENSE).
