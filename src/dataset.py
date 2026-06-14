@@ -24,7 +24,13 @@ from .config import (
     FeatureConfig,
     SpecAugmentConfig,
 )
-from .features import audio_path_to_feature, spec_augment
+from .features import (
+    audio_path_to_feature,
+    augment_waveform,
+    load_waveform,
+    spec_augment,
+    waveform_to_logmel,
+)
 
 Sample = Tuple[str, int]
 
@@ -175,7 +181,13 @@ def build_dataset_class():
         def __getitem__(self, idx: int):
             path, label = self.samples[idx]
             try:
-                feat = audio_path_to_feature(path, self.audio_cfg, self.feat_cfg)
+                if self.train:
+                    # training path: load -> waveform augment -> log-mel
+                    y = load_waveform(path, self.audio_cfg)
+                    y = augment_waveform(y, self.audio_cfg, self._rng)
+                    feat = waveform_to_logmel(y, self.audio_cfg, self.feat_cfg)
+                else:
+                    feat = audio_path_to_feature(path, self.audio_cfg, self.feat_cfg)
             except Exception:
                 # A corrupt/unreadable file should not crash a whole epoch.
                 T = 1 + self.audio_cfg.num_samples // self.feat_cfg.hop_length

@@ -127,3 +127,58 @@ def spec_augment(
             feat[:, t0: t0 + w] = fill
 
     return feat
+
+def augment_waveform(
+    y: np.ndarray,
+    a: AudioConfig,
+    rng: Optional[np.random.Generator] = None,
+) -> np.ndarray:
+    """Light, self-contained waveform augmentation for training robustness.
+
+    Each transform fires with its own probability. The goal is to destroy
+    brittle, domain-specific cues (level, alignment, bandwidth, channel noise)
+    so the model must learn generalisable genuine-vs-synthetic artefacts that
+    transfer to unseen synthesizers. No external files needed; output is
+    float32 and exactly the same length as the input.
+    """
+    import librosa
+
+    rng = rng or np.random.default_rng()
+    y = np.asarray(y, dtype=np.float32).copy()
+    n = y.shape[0]
+
+    # 1) Random gain — level invariance.
+    if rng.random() < 0.7:
+        y = y * np.float32(rng.uniform(0.6, 1.5))
+
+    # 2) Random circular time shift — alignment invariance.
+    if rng.random() < 0.5:
+        shift = int(rng.integers(-n // 4, n // 4 + 1))
+        y = np.roll(y, shift)
+
+    # 3) Polarity inversion — cheap, harmless regulariser.
+    if rng.random() < 0.5:
+        y = -y
+
+    # 4) Bandwidth-loss / codec proxy: downsample to a random lower rate and
+    #    back. Removes fragile high-frequency synthesis fingerprints that tend
+    #    not to transfer across generators.
+    if rng.random() < 0.5:
+        target = int(rng.choice([4000, 6000, 8000, 11025]))
+        if target < a.sample_rate:
+            down = librosa.resample(y, orig_sr=a.sample_rate, target_sr=target)
+            y = librosa.resample(down, orig_sr=target, target_sr=a.sample_rate)
+            y = fix_length(y, n)
+
+    # 5) Additive Gaussian noise at a random SNR — channel/noise robustness.
+    if rng.random() < 0.5:
+        snr_db = float(rng.uniform(8.0, 40.0))
+        sig_power = float(np.mean(y ** 2)) + 1e-12
+        noise_power = sig_power / (10.0 ** (snr_db / 10.0))
+        y = y + rng.normal(0.0, np.sqrt(noise_power), size=y.shape).astype(np.float32)
+
+    # Keep amplitude sane (guard rare overflow).
+    peak = float(np.max(np.abs(y))) + 1e-12
+    if peak > 1.0:
+        y = y / peak
+    return y.astype(np.float32)
