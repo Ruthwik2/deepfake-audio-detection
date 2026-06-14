@@ -74,7 +74,6 @@ deepfake-audio-detection/
 ├── README.md
 ├── requirements.txt
 ├── config.yaml                  # all hyper-parameters (mirrors src/config.py)
-├── LICENSE
 ├── src/
 │   ├── config.py                # dataclass config + YAML load/save
 │   ├── features.py              # waveform loading + log-mel + SpecAugment
