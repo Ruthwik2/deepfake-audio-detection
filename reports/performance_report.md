@@ -1,51 +1,56 @@
 # Performance Report — Deepfake Audio Detection
 
-> **This is a placeholder.** The real report is generated automatically with the
-> actual metrics when you run evaluation on your trained model:
->
-> ```bash
-> python -m src.evaluate --test-dir data/for-norm/testing
-> ```
->
-> That command overwrites this file with measured results and writes the figures
-> referenced below into `reports/figures/`.
+*Generated automatically by `src/evaluate.py` on 2026-06-15 12:50:29.*
 
-## What this report will contain
+- **Model checkpoint:** `/kaggle/working/models/best_model.pt`
+- **Selected at epoch:** 11 (validation EER 0.28%)
+- **Test directory:** `/kaggle/input/datasets/mohammedabdeldayem/the-fake-or-real-dataset/for-norm/for-norm/testing`
+- **Test samples:** 4634  (Genuine: 2264, Deepfake: 2370)
 
-A submission is **valid** only if **both** primary thresholds are met on the
-evaluation set (§5 of the problem statement); the secondary metrics (§4) are
-reported alongside.
+## Verification result: ✅ PASS
+
+A submission is valid only if **both** primary thresholds are met (§5). The secondary thresholds (§4) are also checked below.
 
 ### Primary metrics (§5)
 
 | Metric | Value | Required | Status |
 |---|---|---|---|
-| Overall Accuracy | _pending_ | ≥ 80% | _pending_ |
-| Equal Error Rate (EER) | _pending_ | ≤ 12% | _pending_ |
+| Overall Accuracy | 92.27% | ≥ 80% | ✅ |
+| Equal Error Rate (EER) | 5.53% | ≤ 12% | ✅ |
 
 ### Secondary metrics (§4)
 
 | Metric | Value | Required | Status |
 |---|---|---|---|
-| F1 Score (macro) | _pending_ | ≥ 80% | _pending_ |
-| Per-Class Accuracy — Genuine | _pending_ | ≥ 75% | _pending_ |
-| Per-Class Accuracy — Deepfake | _pending_ | ≥ 75% | _pending_ |
+| F1 Score (macro) | 92.26% | ≥ 80% | ✅ |
+| Per-Class Accuracy — Genuine | 98.32% | ≥ 75% | ✅ |
+| Per-Class Accuracy — Deepfake | 86.50% | ≥ 75% | ✅ |
 
 ### Confusion matrix
 
+Rows = true class, columns = predicted class.
+
 | | Pred: Genuine | Pred: Deepfake |
 |---|---|---|
-| **True: Genuine** | _pending_ | _pending_ |
-| **True: Deepfake** | _pending_ | _pending_ |
+| **True: Genuine** | 2226 | 38 |
+| **True: Deepfake** | 320 | 2050 |
+
+### Additional metrics
+
+- F1 (Genuine): 92.56%
+- F1 (Deepfake): 91.97%
+- Precision (macro): 92.81%
+- Recall (macro): 92.41%
+- EER operating threshold: 0.209
+- FAR at EER threshold: 5.53%
+- FRR at EER threshold: 5.52%
 
 ### Figures
 
-- `reports/figures/confusion_matrix.png`
-- `reports/figures/roc_curve.png`
-- `reports/figures/training_history.png` (written during training)
+![Confusion matrix](figures/confusion_matrix.png)
+
+![ROC curve with EER](figures/roc_curve.png)
 
 ---
 
-Label convention: **0 = Genuine (Human)**, **1 = Deepfake (AI-Generated)**. The
-detection score is the model's deepfake probability; EER is computed with
-*deepfake* as the positive class.
+Label convention: **0 = Genuine (Human)**, **1 = Deepfake (AI-Generated)**. The detection score is the model's deepfake probability; EER is computed with *deepfake* as the positive class.
