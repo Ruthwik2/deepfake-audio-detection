@@ -20,9 +20,7 @@ models/*.ckpt
 !models/.gitkeep
 
 # ---- Generated reports / figures (optional: commit if you want them in-repo) ----
-reports/metrics.json
-reports/history.json
-reports/figures/*.png
+
 !reports/figures/.gitkeep
 
 # ---- Python ----
