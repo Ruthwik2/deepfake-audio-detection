@@ -2,6 +2,8 @@
 
 Classify a speech recording as **Genuine (Human)** or **Deepfake (AI-Generated)**.
 
+> **🚀 Live demo:** [deepfake-audio-detection-6xmnjgrvrnssmpskye6uaa.streamlit.app](https://deepfake-audio-detection-6xmnjgrvrnssmpskye6uaa.streamlit.app/) — upload a clip and get the verdict plus a confidence score, right in your browser.
+
 This repository is a complete, reproducible solution for *Problem Statement 2 —
 Deepfake Audio Detection*: a PyTorch deep-learning pipeline (data → log-mel
 features → CNN → calibrated probability), a command-line tool to test new audio,
@@ -206,6 +208,10 @@ the Streamlit app, so all three use one identical inference path.
 
 ## Streamlit web app
 
+A hosted instance is live at
+**[deepfake-audio-detection-6xmnjgrvrnssmpskye6uaa.streamlit.app](https://deepfake-audio-detection-6xmnjgrvrnssmpskye6uaa.streamlit.app/)** —
+no install needed. To run it locally:
+
 ```bash
 streamlit run app/streamlit_app.py
 ```
@@ -269,18 +275,21 @@ reported.
 
 ## Results
 
-Fill these in after running `python -m src.evaluate` — they are written
-automatically into `reports/performance_report.md`.
+Measured on the FoR `for-norm` **testing** split (4,634 clips: 2,264 genuine,
+2,370 deepfake); checkpoint selected at epoch 11 (validation EER 0.28 %). These
+are regenerated automatically into `reports/performance_report.md` by
+`python -m src.evaluate`.
 
 | Metric | Result | Threshold | Status |
 |---|---|---|---|
-| Overall Accuracy | _run evaluate.py_ | ≥ 80 % | — |
-| EER | _run evaluate.py_ | ≤ 12 % | — |
-| F1 (macro) | _run evaluate.py_ | ≥ 80 % | — |
-| Per-class accuracy (Genuine) | _run evaluate.py_ | ≥ 75 % | — |
-| Per-class accuracy (Deepfake) | _run evaluate.py_ | ≥ 75 % | — |
+| Overall Accuracy | **92.27 %** | ≥ 80 % | ✅ |
+| EER | **5.53 %** | ≤ 12 % | ✅ |
+| F1 (macro) | **92.26 %** | ≥ 80 % | ✅ |
+| Per-class accuracy (Genuine) | **98.32 %** | ≥ 75 % | ✅ |
+| Per-class accuracy (Deepfake) | **86.50 %** | ≥ 75 % | ✅ |
 
-Confusion matrix and ROC are saved under `reports/figures/`.
+Both primary thresholds (§5) and all secondary thresholds (§4) pass. Confusion
+matrix and ROC are saved under `reports/figures/`.
 
 ## Reproducibility
 
@@ -305,6 +314,9 @@ Confusion matrix and ROC are saved under `reports/figures/`.
    and download them on startup.
 3. On [share.streamlit.io](https://share.streamlit.io), create an app pointing at
    `app/streamlit_app.py`; it installs `requirements.txt` automatically.
+
+This repo's app is deployed at
+**[deepfake-audio-detection-6xmnjgrvrnssmpskye6uaa.streamlit.app](https://deepfake-audio-detection-6xmnjgrvrnssmpskye6uaa.streamlit.app/)**.
 
 > The default `torch` wheel can be large for free tiers. If you hit size/build
 > limits, pin the **CPU-only** torch build (see `requirements.txt` header) to cut
